@@ -39,7 +39,7 @@ jobs:
       - name: Create Unity Package
         uses: pCYSl5EDgo/create-unitypackage@v1.2.3
         with:
-          package-path: "YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
+          package-path: "${{ github.workspace }}/YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
           include-files: metaList
           working-folder: YetAnotherHttpHandler/src
 
