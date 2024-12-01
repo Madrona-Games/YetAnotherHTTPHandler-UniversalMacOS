@@ -26,12 +26,9 @@ jobs:
         with:
           tag: ${{ steps.releaseVersion.outputs.release }}
 
-      - name: Debug
-        run: echo ${{ steps.checkTag.outputs.tag_exists }}
-
       - name: Invoke workflow with inputs
         uses: benc-uk/workflow-dispatch@v1
-        if: steps.checkTag.outputs.tag_exists == 'false'
+        if: steps.checkTag.outputs.exists == 'false'
         with:
           workflow: build.yml
           inputs: '{ "version": "${{ steps.releaseVersion.outputs.release }}" }'
