@@ -1,0 +1,33 @@
+name: Check for new version
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: releaseVersion
+        uses: pozetroninc/github-action-get-latest-release@v0.8.0
+        with:
+          owner: Cysharp
+          repo: YetAnotherHttpHandler
+          excludes: prerelease, draft
+
+      - uses: mukunku/tag-exists-action@v1.6.0
+        id: checkTag
+        with:
+          tag: ${{ steps.releaseVersion.outputs.release }}
+
+      - name: Invoke workflow with inputs
+        uses: benc-uk/workflow-dispatch@v1
+        if: steps.checkTag.outputs.tag_exists == 'false'
+        with:
+          workflow: build.yml
+          inputs: '{ "version": "${{ steps.releaseVersion.outputs.release }}" }'

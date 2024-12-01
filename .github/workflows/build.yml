@@ -1,0 +1,48 @@
+name: Build and Release Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build"
+        required: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: Cysharp/YetAnotherHttpHandler
+          ref: ${{ github.event.inputs.version }}
+          path: YetAnotherHttpHandler
+
+      - name: Modify Package
+        run: |
+          cp -rf dist/osx-universal YetAnotherHttpHandler/src/YetAnotherHttpHandler/Plugins/Cysharp.Net.Http.YetAnotherHttpHandler.Native/runtimes/
+          cd YetAnotherHttpHandler/src/YetAnotherHttpHandler/Plugins/Cysharp.Net.Http.YetAnotherHttpHandler.Native/runtimes/
+          lipo -create osx-arm64/native/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib osx-x64/native/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib -output osx-universal/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib
+          rm -rf osx-arm64
+          rm -rf osx-x64
+
+      - name: Find Package Contents
+        run: |
+          echo "YetAnotherHttpHandler/src/YetAnotherHttpHandler.meta" > metalist
+          find YetAnotherHttpHandler/src/YetAnotherHttpHandler/ -name \*.meta >> metalist
+
+      - name: Create Unity Package
+        uses: pCYSl5EDgo/create-unitypackage@v1.2.3
+        with:
+          package-path: "YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
+          include-files: metaList
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage
+          make_latest: "true"
+          tag_name: ${{ github.event.inputs.version }}
