@@ -23,6 +23,7 @@ jobs:
 
       - name: Modify Package
         run: |
+          cp -f dist/YetAnotherHttpHandler.meta YetAnotherHttpHandler/src/YetAnotherHttpHandler.meta
           cp -rf dist/osx-universal YetAnotherHttpHandler/src/YetAnotherHttpHandler/Plugins/Cysharp.Net.Http.YetAnotherHttpHandler.Native/runtimes/
           cd YetAnotherHttpHandler/src/YetAnotherHttpHandler/Plugins/Cysharp.Net.Http.YetAnotherHttpHandler.Native/runtimes/
           lipo -create osx-arm64/native/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib osx-x64/native/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib -output osx-universal/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib
