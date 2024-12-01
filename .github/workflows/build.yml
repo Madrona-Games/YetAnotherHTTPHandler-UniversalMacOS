@@ -35,15 +35,15 @@ jobs:
         run: |
           cd YetAnotherHttpHandler
           mv src Assets
-          echo "Assets/YetAnotherHttpHandler.meta" > Assets/metaList
-          find Assets/YetAnotherHttpHandler/ -name \*.meta >> Assets/metaList
+          echo "Assets/YetAnotherHttpHandler.meta" > metaList
+          find Assets/YetAnotherHttpHandler/ -name \*.meta >> metaList
 
       - name: Create Unity Package
         uses: pCYSl5EDgo/create-unitypackage@v1.2.3
         with:
           package-path: "${{ github.workspace }}/YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
           include-files: metaList
-          working-folder: YetAnotherHttpHandler/Assets
+          working-folder: YetAnotherHttpHandler
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
