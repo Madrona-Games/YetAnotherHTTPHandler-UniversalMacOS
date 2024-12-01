@@ -29,15 +29,24 @@ jobs:
           lipo -create osx-arm64/native/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib osx-x64/native/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib -output osx-universal/libCysharp.Net.Http.YetAnotherHttpHandler.Native.dylib
           rm -rf osx-arm64
           rm -rf osx-x64
+          rm -f osx-arm64.meta osx-x64.meta
 
-      - name: Zip Package
+      - name: Find Package Contents
         run: |
           cd YetAnotherHttpHandler/src
-          ditto -c -k --sequesterRsrc --keepParent YetAnotherHttpHandler ../../YetAnotherHttpHandler-${{ github.event.inputs.version }}.zip
+          echo "YetAnotherHttpHandler.meta" > metalist
+          find YetAnotherHttpHandler/ -name \*.meta >> metalist
+
+      - name: Create Unity Package
+        uses: pCYSl5EDgo/create-unitypackage@v1.2.3
+        with:
+          package-path: "${{ github.workspace }}/YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
+          include-files: metaList
+          working-folder: YetAnotherHttpHandler/src
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: YetAnotherHttpHandler-${{ github.event.inputs.version }}.zip
+          files: YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage
           make_latest: "true"
           tag_name: ${{ github.event.inputs.version }}
