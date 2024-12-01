@@ -31,14 +31,23 @@ jobs:
           rm -rf osx-x64
           rm -f osx-arm64.meta osx-x64.meta
 
-      - name: Zip Package
+      - name: Setup Package Content Paths
         run: |
-          cd YetAnotherHttpHandler/src
-          ditto -c -k --sequesterRsrc --keepParent YetAnotherHttpHandler ../../YetAnotherHttpHandler-${{ github.event.inputs.version }}.zip
+          cd YetAnotherHttpHandler
+          mv src Assets
+          echo "Assets/YetAnotherHttpHandler.meta" > metalist
+          find Assets/YetAnotherHttpHandler/ -name \*.meta >> metalist
+
+      - name: Create Unity Package
+        uses: pCYSl5EDgo/create-unitypackage@v1.2.3
+        with:
+          package-path: "${{ github.workspace }}/YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
+          include-files: metaList
+          working-folder: YetAnotherHttpHandler/Assets
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: YetAnotherHttpHandler-${{ github.event.inputs.version }}.zip
+          files: YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage
           make_latest: "true"
           tag_name: ${{ github.event.inputs.version }}
