@@ -32,14 +32,16 @@ jobs:
 
       - name: Find Package Contents
         run: |
-          echo "YetAnotherHttpHandler/src/YetAnotherHttpHandler.meta" > metalist
-          find YetAnotherHttpHandler/src/YetAnotherHttpHandler/ -name \*.meta >> metalist
+          cd YetAnotherHttpHandler/src
+          echo "YetAnotherHttpHandler.meta" > metalist
+          find YetAnotherHttpHandler/ -name \*.meta >> metalist
 
       - name: Create Unity Package
         uses: pCYSl5EDgo/create-unitypackage@v1.2.3
         with:
           package-path: "YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
           include-files: metaList
+          working-folder: YetAnotherHttpHandler/src
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
