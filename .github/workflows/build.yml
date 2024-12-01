@@ -30,22 +30,14 @@ jobs:
           rm -rf osx-arm64
           rm -rf osx-x64
 
-      - name: Find Package Contents
+      - name: Zip Package
         run: |
           cd YetAnotherHttpHandler/src
-          echo "YetAnotherHttpHandler.meta" > metalist
-          find YetAnotherHttpHandler/ -name \*.meta >> metalist
-
-      - name: Create Unity Package
-        uses: pCYSl5EDgo/create-unitypackage@v1.2.3
-        with:
-          package-path: "${{ github.workspace }}/YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage"
-          include-files: metaList
-          working-folder: YetAnotherHttpHandler/src
+          ditto -c -k --sequesterRsrc --keepParent YetAnotherHttpHandler ../../YetAnotherHttpHandler-${{ github.event.inputs.version }}.zip
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: YetAnotherHttpHandler-${{ github.event.inputs.version }}.unitypackage
+          files: YetAnotherHttpHandler-${{ github.event.inputs.version }}.zip
           make_latest: "true"
           tag_name: ${{ github.event.inputs.version }}
