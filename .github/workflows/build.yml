@@ -35,8 +35,8 @@ jobs:
         run: |
           cd YetAnotherHttpHandler
           mv src Assets
-          echo "Assets/YetAnotherHttpHandler.meta" > metalist
-          find Assets/YetAnotherHttpHandler/ -name \*.meta >> metalist
+          echo "Assets/YetAnotherHttpHandler.meta" > Assets/metaList
+          find Assets/YetAnotherHttpHandler/ -name \*.meta >> Assets/metaList
 
       - name: Create Unity Package
         uses: pCYSl5EDgo/create-unitypackage@v1.2.3
