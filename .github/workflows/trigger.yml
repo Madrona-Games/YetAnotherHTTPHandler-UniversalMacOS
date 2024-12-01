@@ -2,7 +2,8 @@ name: Check for new version
 
 on:
   schedule:
-    - cron: "*/59 * * * *"
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
 
 jobs:
   check-version:
@@ -24,6 +25,9 @@ jobs:
         id: checkTag
         with:
           tag: ${{ steps.releaseVersion.outputs.release }}
+
+      - name: Debug
+        run: echo ${{ steps.checkTag.outputs.tag_exists }}
 
       - name: Invoke workflow with inputs
         uses: benc-uk/workflow-dispatch@v1
